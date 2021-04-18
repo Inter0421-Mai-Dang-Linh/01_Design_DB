@@ -51,7 +51,7 @@ CREATE TABLE Khach_Hang(
     primary key(IDKhachHang,SoCMTND,Email)
     );
 
--- ALTER TABLE Khach_Hang ADD CONSTRAINT fk_Khach_hang_Loai_Khach FOREIGN KEY (IDLoaiKhach) REFERENCES Loai_Khach(IDLoaiKhach);
+ALTER TABLE Khach_Hang ADD CONSTRAINT fk_Khach_hang_Loai_Khach FOREIGN KEY (IDLoaiKhach) REFERENCES Loai_Khach(IDLoaiKhach);
 
 CREATE TABLE Kieu_Thue(
 	IDKieuThue int primary key,
@@ -77,7 +77,7 @@ CREATE TABLE Dich_Vu(
     );
     
 -- ALTER TABLE Dich_Vu ADD CONSTRAINT fk_Dich_Vu_Kieu_Thue FOREIGN KEY (IDKieuThue) REFERENCES Kieu_Thue(IDKieuThue);
--- ALTER TABLE Dich_Vu ADD CONSTRAINT fk_Dich_Vu_Loai_Dich_Vu FOREIGN KEY (IDLoaiDichVu) REFERENCES Loai_Dich_Vu(IDLoaiDichVu);
+ALTER TABLE Dich_Vu ADD CONSTRAINT fk_Dich_Vu_Loai_Dich_Vu FOREIGN KEY (IDLoaiDichVu) REFERENCES Loai_Dich_Vu(IDLoaiDichVu);
 
 CREATE TABLE Hop_Dong(
 	IDHopDong int not null,
@@ -92,7 +92,7 @@ CREATE TABLE Hop_Dong(
     );
 
 -- ALTER TABLE Hop_Dong ADD CONSTRAINT fk_Hop_Dong_Nhan_Vien FOREIGN KEY (IDNhanVien) REFERENCES Nhan_Vien(IDNhanVien);
--- ALTER TABLE Hop_Dong ADD CONSTRAINT fk_Hop_Dong_Khach_Hang FOREIGN KEY (IDKhachHang) REFERENCES Khach_Hang(IDKhachHang);
+ALTER TABLE Hop_Dong ADD CONSTRAINT fk_Hop_Dong_Khach_Hang FOREIGN KEY (IDKhachHang) REFERENCES Khach_Hang(IDKhachHang);
 -- ALTER TABLE Hop_Dong ADD CONSTRAINT fk_Hop_Dong_Dich_Vu FOREIGN KEY (IDDichVu) REFERENCES Dich_Vu(IDDichVu);
 
 CREATE TABLE Dich_Vu_Di_Kem(
@@ -103,12 +103,12 @@ CREATE TABLE Dich_Vu_Di_Kem(
     TrangThaiKhaDung varchar(45),
     primary key (IDDichVuDiKem)
     );
-    
+-- DROP table Hop_Dong_Chi_Tiet;
 CREATE TABLE Hop_Dong_Chi_Tiet(
 	IDHopDongChiTiet int,
-    SoLuong int,
-    IDDichVuDiKem int,
     IDHopDong int,
+	IDDichVuDiKem int,
+    SoLuong int,
     primary key(IDHopDongChiTiet)
     );
 -- drop table Hop_Dong_Chi_Tiet;
@@ -170,10 +170,10 @@ values
 
 
 
--- insert into Hop_Dong_Chi_Tiet (IDHopDongChiTiet,SoLuong,DichVuDiKem_IDDichVuDiKem ,HopDong_IDHopDong)
--- values
--- (01,01,01,01),
--- (02,01,02,02);
+insert into Hop_Dong_Chi_Tiet (IDHopDongChiTiet,IDHopDong,IDDichVuDiKem,SoLuong)
+values
+(01,01,01,03),
+(02,01,02,02);
 
 -- insert into Dich_Vu_Di_Kem(IDDichVuDiKem,TenDichVuDiKem,Gia,DonVi,TrangThaiKhaDung)
 -- values
@@ -220,3 +220,15 @@ SELECT * FROM quanlyresort.nhan_vien where (Hoten like 'H%' or Hoten like 'T%' o
 -- cau 3:
 SELECT * FROM quanlyresort.khach_hang where (year(curdate())-year(NgaySinh)) > 18 and (year(curdate())-year(NgaySinh)) <50 and(DiaChi in ('Da Nang','Quang Tri'));
 
+-- cau 4:
+SELECT Hop_Dong.IDHopDong,Khach_Hang.HoTen, count(Hop_Dong.IDKhachHang) as Solan
+from Hop_Dong inner join Khach_Hang  on Hop_Dong.IDKhachHang = Khach_Hang.IDKhachHang
+where Khach_Hang.IDLoaiKhach = 1 group by Hop_Dong.IDKhachHang  order by Solan asc; 
+
+-- cau 5: 
+
+
+-- cau 8: 
+SELECT DISTINCT HoTen from Khach_hang;
+SELECT Hoten from Khach_Hang group by Hoten;
+select Hoten from Khach_Hang group by Hoten having count(Hoten) =1 union select Hoten from Khach_hang  having count(Hoten) > 1
